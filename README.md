@@ -1,5 +1,5 @@
 
-# nvidia_isaac-sim_ros2_docker
+# nvidia_isaac-sim_ubuntu24.04
 Run NVIDIA Isaac Sim 4.5.0 in a Docker container with Ubuntu 24.04 with other requirements satisfied by using [Isaac Sim Compatibility Checker](https://docs.isaacsim.omniverse.nvidia.com/latest/installation/download.html).<br>
 In order to build the image, you can either follow the steps manually or run the bash script ``build.sh``. Make sure to meet all the prerrequisites.<br>
 In order to run the container, you can run it manually as shown below or run the bash script ``run.sh``.<br>
