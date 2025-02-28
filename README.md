@@ -105,23 +105,25 @@ chmod u+x build.sh run.sh
 
 Build:
 ```bash
-./build.sh
+sudo -E ./build.sh 
 ```
 
 Run:
 ```bash
-./run.sh
+sudo -E ./run.sh
 ```
 
 # Run Headless mode
-After getting into the Docker container, run `./runheadless.sh` in the `isaac-sim` directory. You will see a message that says, "Isaac Sim Full Streaming App is loaded,” if it ran successfully.
+After getting into the Docker container, run `./runheadless.sh` in the `isaac-sim` directory. If it ran successfully, you will see a message that says, "Isaac Sim Full Streaming App is loaded”.
 
 # Visualize GUI via Isaac Sim WebRTC Streaming Client
-Download [Isaac Sim WebRTC Streaming Client](https://docs.isaacsim.omniverse.nvidia.com/latest/installation/download.html). Open the downloaded file and connect.
+Download [Isaac Sim WebRTC Streaming Client](https://docs.isaacsim.omniverse.nvidia.com/latest/installation/download.html). Open the downloaded file, run 
+```bash
+./isaacsim-webrtc-streaming-client-1.0.6-linux-x64.AppImage --no-sandbox --enable-unsafe-swiftshader
+```
+and connect as shown below.
 
-![image](https://github.com/user-attachments/assets/4d8bf01f-1428-44bf-9ec0-ec1da0a74ea3) 
-
-Click connect to see the GUI.
+![alt text](image.png)
 
 
 # Bibliography
