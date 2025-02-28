@@ -1,68 +1,26 @@
-# Base image
-FROM nvcr.io/nvidia/isaac-sim:4.2.0
+# Dockerfile - Isaac Sim 4.5.0 (Ubuntu 22.04) with GUI, no ROS2
+FROM nvcr.io/nvidia/isaac-sim:4.5.0
 
-ENV DEBIAN_FRONTEND noninteractive
+# Set proxy environment variables and other necessary settings
+ENV NO_PROXY="localhost.127.0.0.1,::1"
+ENV HTTP_PROXY="ftp://squid.cs.wisc.edu:3128/"
+ENV HTTPS_PROXY="http://squid.cs.wisc.edu:3128/"
+ENV HTTP_PROXY="http://squid.cs.wisc.edu:3128/"
+ENV no_proxy="localhost.127.0.0.1,::1"
+ENV ftp_proxy="ftp://squid.cs.wisc.edu:3128/"
+ENV https_proxy="http://squid.cs.wisc.edu:3128/"
+ENV http_proxy="http://squid.cs.wisc.edu:3128/"
+ENV NVIDIA_DRIVER_CAPABILITIES="all"
+ENV OMNI_KIT_ALLOW_ROOT=1
 
-# Install necessary dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    wget \
-    libgl1-mesa-glx \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Install essential dependencies for Isaac Sim GUI on Ubuntu 22.04
+RUN apt-get update && apt-get -oDebug::pkgAcquire::Worker=1 install -y --no-install-recommends \
+    libatomic1 libegl1 libglu1-mesa libgomp1 \
+    libsm6 libxi6 libxrandr2 libxt6 \
+    libfreetype6 libfontconfig1 openssl vulkan-tools zenity nano vim \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install ROS2 Humble
-RUN apt-get update && apt-get install -y locales
+# (GUI mode is enabled by default; no headless mode flags are set)
 
-RUN locale-gen en_US en_US.UTF-8
-
-RUN update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
-
-RUN apt-get install -y software-properties-common
-
-RUN add-apt-repository universe
-   
-RUN apt-get update && apt-get install -y curl gnupg2 lsb-release
-
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add -
-
-RUN sh -c 'echo "deb [arch=amd64] http://packages.ros.org/ros2/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/ros2-latest.list'
-
-RUN apt-get update && apt-get install -y ros-humble-desktop
-
-RUN apt-get clean
-
-RUN rm -rf /var/lib/apt/lists/*
-
-# Install ROS2 bridge for Isaac Sim
-RUN apt-get update && apt-get install -y \
-    ros-humble-ros-ign-bridge \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Set environment variables
-ENV ACCEPT_EULA=Y
-ENV PRIVACY_CONSENT=Y
-ENV LANG=en_US.UTF-8
-ENV LC_ALL=en_US.UTF-8
-ENV ROS_DISTRO=humble
-ENV ROS_VERSION=2
-ENV ROS_PYTHON_VERSION=3
-
-# Set up volumes for caches and data
-VOLUME ["/isaac-sim/kit/cache", "/root/.cache/ov", "/root/.cache/pip", "/root/.cache/nvidia/GLCache", "/root/.nv/ComputeCache", "/root/.nvidia-omniverse/logs", "/root/.local/share/ov/data", "/root/Documents"]
-
-# Source ROS2
-SHELL ["/bin/bash", "-c"]
-RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-
-# README!: the statements below, especially the second one, should run Isaac Sim every time the container is initialized. However, it does not work.
-# Command to run Isaac Sim in headless mode
-# CMD ["./runheadless.native.sh", "-v"]
-
-# Command to run Isaac Sim with GUI
-# CMD ["./runapp.sh", "-v"]
+# Set entrypoint to bash for an interactive container session
+ENTRYPOINT ["/bin/bash"]
